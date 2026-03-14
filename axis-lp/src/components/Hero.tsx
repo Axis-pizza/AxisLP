@@ -113,6 +113,9 @@ export default function Hero() {
         <div className="absolute inset-0 bg-[#0a0a0a]/60" />
       </div>
 
+      {/* Subtle gold radial glow behind content */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] rounded-full bg-[#D97706]/[0.07] blur-[120px] pointer-events-none z-[1]" />
+
       <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 w-full max-w-3xl mx-auto pt-20 pointer-events-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

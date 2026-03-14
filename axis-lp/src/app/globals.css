@@ -39,6 +39,7 @@ body {
 
 .card-dark:hover {
   border-color: rgba(217, 119, 6, 0.3);
+  box-shadow: 0 8px 30px -10px rgba(217, 119, 6, 0.1);
 }
 
 /* Card-glass alias for ambassador page */
@@ -52,6 +53,7 @@ body {
 
 .card-glass:hover {
   border-color: rgba(217, 119, 6, 0.3);
+  box-shadow: 0 8px 30px -10px rgba(217, 119, 6, 0.1);
 }
 
 /* --- Gold accent text (headings, brand) --- */

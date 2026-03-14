@@ -16,13 +16,13 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-8">
           <img src="/logo.png" alt="Axis" className="h-8 w-auto opacity-60" />
           <div className="flex gap-5">
-            <a href="https://x.com/Axis_pizza" target="_blank" rel="noopener noreferrer" className="text-white/25 hover:text-white/60 transition-colors">
+            <a href="https://x.com/Axis_pizza" target="_blank" rel="noopener noreferrer" className="text-white/25 hover:text-[#D97706] transition-colors">
               <XIcon className="w-4 h-4" />
             </a>
-            <a href="https://github.com/Axis-pizza/Axis_MVP" target="_blank" rel="noopener noreferrer" className="text-white/25 hover:text-white/60 transition-colors">
+            <a href="https://github.com/Axis-pizza/Axis_MVP" target="_blank" rel="noopener noreferrer" className="text-white/25 hover:text-[#D97706] transition-colors">
               <Github className="w-4 h-4" />
             </a>
-            <a href="https://muse-7.gitbook.io/axis/product-docs" target="_blank" rel="noopener noreferrer" className="text-white/25 hover:text-white/60 transition-colors">
+            <a href="https://muse-7.gitbook.io/axis/product-docs" target="_blank" rel="noopener noreferrer" className="text-white/25 hover:text-[#D97706] transition-colors">
               <FileText className="w-4 h-4" />
             </a>
           </div>
@@ -30,10 +30,10 @@ export default function Footer() {
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-6 border-t border-white/[0.04]">
           <div className="flex flex-wrap justify-center gap-5 text-[11px] text-white/20 font-medium">
-            <a href="/privacy" className="hover:text-white/40 transition-colors">Privacy</a>
-            <a href="/terms" className="hover:text-white/40 transition-colors">Terms</a>
-            <a href="/license" className="hover:text-white/40 transition-colors">License</a>
-            <a href="/copyright" className="hover:text-white/40 transition-colors">Copyright</a>
+            <a href="/privacy" className="hover:text-[#D97706] transition-colors">Privacy</a>
+            <a href="/terms" className="hover:text-[#D97706] transition-colors">Terms</a>
+            <a href="/license" className="hover:text-[#D97706] transition-colors">License</a>
+            <a href="/copyright" className="hover:text-[#D97706] transition-colors">Copyright</a>
           </div>
           <p className="text-[11px] text-white/15 font-mono">&copy; 2026 Axis</p>
         </div>

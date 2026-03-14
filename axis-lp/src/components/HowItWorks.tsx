@@ -67,7 +67,7 @@ export default function HowItWorks() {
       <div className="lg:hidden flex flex-col gap-16 py-20 px-6">
         <div>
           <p className="text-[#FCD34D] text-xs font-bold uppercase tracking-widest mb-3">How it works</p>
-          <h2 className="text-3xl font-black text-white tracking-[-0.03em]">Three steps. That&apos;s it.</h2>
+          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-[-0.03em]">Three steps. That&apos;s it.</h2>
         </div>
         {steps.map((step) => (
           <div key={step.id} className="flex flex-col items-center text-center gap-6">
@@ -76,7 +76,7 @@ export default function HowItWorks() {
               <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">{step.title}</h3>
               <p className="text-white/40 text-sm sm:text-base leading-relaxed max-w-xs mx-auto">{step.desc}</p>
             </div>
-            <div className="w-[220px]">
+            <div className="w-[260px] sm:w-[280px]">
               <PhoneMockup>
                 <video src={step.video} autoPlay loop muted playsInline className="w-full h-full object-cover" />
               </PhoneMockup>
@@ -102,13 +102,13 @@ export default function HowItWorks() {
                   <h3 className="text-5xl xl:text-6xl font-black mb-4 text-white tracking-[-0.03em]">
                     {steps[activeStep].title}
                   </h3>
-                  <p className="text-lg text-white/40 max-w-md">{steps[activeStep].desc}</p>
+                  <p className="text-lg xl:text-xl text-white/40 max-w-md">{steps[activeStep].desc}</p>
                 </motion.div>
               </AnimatePresence>
             </div>
 
             <div className="flex justify-end">
-              <div className="w-[280px]">
+              <div className="w-[300px] xl:w-[340px]">
                 <PhoneMockup>
                   <AnimatePresence mode="wait">
                     <motion.video

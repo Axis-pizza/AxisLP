@@ -1,62 +1,110 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: "Times New Roman", Times, serif;
-  --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+  /* タイポグラフィ: 見出しはセリフ、数字はサンセリフでメリハリをつける */
+  --font-serif: "Lora", "Times New Roman", serif;
+  --font-sans: "Lora", "Times New Roman", serif;
 
+  /* カラーパレット: 画像から抽出した深い黒と鋭いゴールド */
   --color-obsidian: #050505;
   --color-charcoal: #0F0F0F;
-  --color-gold-light: #FCD34D;
-  --color-gold-base: #D97706;
-  --color-gold-dark: #78350F;
-  --color-accent-green: #10B981;
+  --color-gold-light: #FCD34D; /* 輝くハイライト */
+  --color-gold-base: #D97706;  /* ベースの金 */
+  --color-gold-dark: #78350F;  /* 深いブロンズ */
+  --color-accent-green: #10B981; /* 投資のプラス表示用 */
 
+  /* アニメーション定義 */
   @keyframes shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
-
+  
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-10px); }
   }
 }
 
+/* --- ベース設定 --- */
 body {
-  background-color: #0a0a0a;
-  color: #e5e5e5;
-  font-family: var(--font-sans);
+  background-color: var(--color-obsidian);
+  color: #E7E5E4;
+  font-family: var(--font-serif);
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(120, 53, 15, 0.15), transparent 60%),
+    linear-gradient(to bottom, #000000, #050505);
   min-height: 100vh;
 }
 
-/* --- Flat dark card --- */
-@utility card-dark {
-  background: #111111;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 16px;
-  transition: border-color 0.2s ease;
-}
-
-.card-dark:hover {
-  border-color: rgba(217, 119, 6, 0.3);
-  box-shadow: 0 8px 30px -10px rgba(217, 119, 6, 0.1);
-}
-
-/* Card-glass alias for ambassador page */
+/* --- 高級ガラスカード (Frame 38の再現) --- */
 @utility card-glass {
-  background: #111111;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 16px;
+  /* 背景: 半透明の黒 + ノイズ + 上からの微妙な光 */
+  background: 
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.6) 100%),
+    rgba(10, 10, 10, 0.7);
+  
+  backdrop-filter: blur(24px);
+  border-radius: 24px;
+
+  /* ボーダー: 上部は白っぽく（反射）、下部はゴールド（照り返し） */
+  border: 1px solid transparent;
+  mask-image: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  
   position: relative;
-  transition: border-color 0.2s ease;
+  box-shadow: 
+    0 20px 50px -10px rgba(0, 0, 0, 0.8),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* カードの枠線（擬似要素でグラデーションボーダーを作る手法） */
+.card-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: 1px; /* ボーダーの太さ */
+  background: linear-gradient(
+    160deg, 
+    rgba(255, 255, 255, 0.2) 0%, 
+    rgba(255, 255, 255, 0.05) 30%, 
+    rgba(217, 119, 6, 0.1) 60%, 
+    rgba(217, 119, 6, 0.6) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* 地面の照り返し（アンダーグロー） */
+.card-glass::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: 10%;
+  right: 10%;
+  height: 40px;
+  background: radial-gradient(ellipse at center, rgba(217, 119, 6, 0.4), transparent 70%);
+  filter: blur(20px);
+  z-index: -1;
+  opacity: 0.6;
+  transition: opacity 0.5s ease;
 }
 
 .card-glass:hover {
-  border-color: rgba(217, 119, 6, 0.3);
-  box-shadow: 0 8px 30px -10px rgba(217, 119, 6, 0.1);
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9);
 }
 
-/* --- Gold accent text (headings, brand) --- */
+.card-glass:hover::after {
+  opacity: 0.8;
+}
+
+/* --- タイポグラフィユーティリティ --- */
 @utility text-gold-gradient {
   background: linear-gradient(135deg, #FFFBEB 0%, #FCD34D 40%, #D97706 100%);
   -webkit-background-clip: text;
@@ -65,78 +113,72 @@ body {
 }
 
 @utility text-glow {
-  text-shadow: 0 0 30px rgba(217, 119, 6, 0.4);
+  text-shadow: 0 0 20px rgba(217, 119, 6, 0.3);
 }
 
-/* --- Primary CTA button (gold) --- */
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 14px 32px;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 0.875rem;
-  color: #000;
-  background: #FCD34D;
-  letter-spacing: -0.01em;
-  transition: all 0.15s ease;
-}
-
-.btn-primary:hover {
-  background: #fde68a;
-  box-shadow: 0 0 40px rgba(252, 211, 77, 0.25);
-}
-
-.btn-primary:active {
-  transform: scale(0.98);
-}
-
-/* Legacy alias */
+/* --- Liquid Glass CTA Button --- */
 .btn-liquid-glass {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   padding: 14px 32px;
-  border-radius: 12px;
-  font-weight: 700;
+  border-radius: 100px;
+  font-weight: 500;
   font-size: 0.875rem;
-  color: #000;
-  background: #FCD34D;
-  letter-spacing: -0.01em;
-  transition: all 0.15s ease;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 8px 32px 0 rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    inset 0 -2px 10px rgba(217, 119, 6, 0.15);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.btn-liquid-glass::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: 0.5s;
 }
 
 .btn-liquid-glass:hover {
-  background: #fde68a;
-  box-shadow: 0 0 40px rgba(252, 211, 77, 0.25);
+  transform: translateY(-3px) scale(1.02);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 15px 40px -5px rgba(217, 119, 6, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4),
+    inset 0 -2px 15px rgba(217, 119, 6, 0.3);
+  color: #fffbeb;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-/* --- Secondary button --- */
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 14px 32px;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: #a3a3a3;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  letter-spacing: -0.01em;
-  transition: all 0.15s ease;
+.btn-liquid-glass:hover::before {
+  left: 150%;
 }
 
-.btn-secondary:hover {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.25);
+.btn-liquid-glass:active {
+  transform: translateY(1px) scale(0.98);
 }
 
 ::selection {
-  background: #D97706;
+  background: #d97706;
   color: #000;
 }

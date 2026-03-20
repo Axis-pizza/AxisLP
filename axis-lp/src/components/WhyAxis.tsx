@@ -2,61 +2,69 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Zap, ShieldCheck, ArrowRight } from "lucide-react";
 
 const features = [
   {
-    icon: <Zap className="w-5 h-5" />,
-    title: "One-Click Diversification",
-    desc: "Mint an index token and get exposure to an entire strategy in a single transaction.",
+    number: "01",
+    title: "One-Click Portfolios",
+    desc: "Pick a strategy. Deposit SOL. You're done. The protocol handles routing across every token in the basket in a single transaction.",
   },
   {
-    icon: <ShieldCheck className="w-5 h-5" />,
+    number: "02",
     title: "Fully Permissionless",
-    desc: "Anyone can create and launch an index fund onchain. No gatekeepers, no applications.",
+    desc: "No applications. No gatekeepers. Define your token weights, set a name, and your fund is live onchain for anyone to invest in.",
   },
   {
-    icon: <ArrowRight className="w-5 h-5" />,
-    title: "Automatic Rebalancing",
-    desc: "Set your rules once and the protocol handles the rest. Built on Solana for speed.",
+    number: "03",
+    title: "Auto Rebalancing",
+    desc: "Set your target allocations once. The protocol rebalances on Solana — fast enough and cheap enough to do it properly.",
   },
 ];
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.12, duration: 0.7, ease: [0.22, 1, 0.36, 1] as const },
+  }),
+};
+
 export default function WhyAxis() {
   return (
-    <section className="relative z-10 py-24 sm:py-32 px-6 bg-[#0a0a0a]">
-      <div className="max-w-[1200px] mx-auto">
+    <section className="relative z-10 py-32 sm:py-40 px-6">
+      <div className="max-w-6xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-14"
+          transition={{ duration: 0.7 }}
+          className="mb-20"
         >
-          <p className="text-[#FCD34D] text-xs font-bold uppercase tracking-widest mb-3">
-            Why Axis
-          </p>
-          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-[-0.03em] leading-tight">
-            Index funds, but onchain.
+          <h2 className="text-5xl sm:text-7xl lg:text-8xl font-normal text-white leading-[0.95] tracking-tight">
+            Why{" "}
+            <span className="text-gold-gradient italic">Axis</span>
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-white/10">
           {features.map((feature, i) => (
             <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
-              className="card-dark p-6"
+              key={feature.number}
+              custom={i}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={fadeUp}
+              className="py-10 md:py-12 px-0 md:px-8 border-b md:border-b-0 md:border-r border-white/10 last:border-r-0 last:border-b-0"
             >
-              <div className="w-10 h-10 rounded-lg bg-[#FCD34D]/10 flex items-center justify-center text-[#FCD34D] mb-4">
-                {feature.icon}
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold text-white mb-2 tracking-tight">
+              <span className="text-[#D97706] text-sm font-mono mb-6 block">
+                {feature.number}
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-normal text-white mb-4 leading-tight">
                 {feature.title}
               </h3>
-              <p className="text-sm sm:text-base text-white/40 leading-relaxed">
+              <p className="text-white/40 text-sm leading-relaxed">
                 {feature.desc}
               </p>
             </motion.div>

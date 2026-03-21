@@ -174,7 +174,7 @@ export default function Mechanism() {
           <h2 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-normal leading-tight text-white">
             Don&apos;t pay for <br />
             <span className="text-white/40">rebalancing.</span> <br />
-            <span className="text-gold-gradient italic">Get paid for it.</span>
+            <span className="text-gold-gradient">Get paid for it.</span>
           </h2>
           <p className="text-sm sm:text-base text-white/60 leading-relaxed max-w-md mx-auto lg:mx-0">
             Traditional AMMs leak value to arbitrage bots. Axis internalizes

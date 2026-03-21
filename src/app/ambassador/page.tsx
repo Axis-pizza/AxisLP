@@ -31,7 +31,7 @@ const Hero = () => (
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.3 }}
-        className="text-xl sm:text-2xl font-serif italic text-white/40 mb-6"
+        className="text-xl sm:text-2xl font-serif text-white/40 mb-6"
       >
         Join the Inner Circle.
       </motion.p>
@@ -130,7 +130,7 @@ const Vision = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-white/40 text-lg italic font-serif max-w-xl mx-auto"
+            className="text-white/40 text-lg font-serif max-w-xl mx-auto"
           >
             The &ldquo;Tinder UI × ETF Factory&rdquo; revolution, explained.
           </motion.p>

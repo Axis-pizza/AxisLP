@@ -192,7 +192,7 @@ export default function Hero() {
         >
           Your idea.
           <br />
-          <span className="text-gold-gradient italic font-normal pr-4">
+          <span className="text-gold-gradient font-normal pr-4">
             Your ETF.
           </span>
         </motion.h1>

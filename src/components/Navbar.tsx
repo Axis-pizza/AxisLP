@@ -39,7 +39,7 @@ export default function Navbar() {
           onClick={goHome}
           className="hover:opacity-80 transition-opacity"
         >
-          <img src="/logo.png" alt="Axis" className="h-12 w-auto" />
+          <img src="/logo.svg" alt="Axis" className="h-12 w-auto" />
         </button>
 
         <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">

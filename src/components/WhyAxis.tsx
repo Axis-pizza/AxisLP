@@ -43,7 +43,7 @@ export default function WhyAxis() {
         >
           <h2 className="text-5xl sm:text-7xl lg:text-8xl font-normal text-white leading-[0.95] tracking-tight">
             Why{" "}
-            <span className="text-gold-gradient italic">Axis</span>
+            <span className="text-gold-gradient">Axis</span>
           </h2>
         </motion.div>
 

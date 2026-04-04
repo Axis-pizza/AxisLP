@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Bot } from "lucide-react"; // Botアイコンを追加
 
 const navLinks = [
   { name: "Home", id: "hero" },
@@ -14,7 +14,6 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const scrollTo = (id: string) => {
-    // If we're not on the home page, navigate there first
     if (window.location.pathname !== '/') {
       window.location.href = '/#' + id;
       return;
@@ -53,11 +52,11 @@ export default function Navbar() {
             </button>
           ))}
           <a
-            href="/ambassador"
-            className="text-sm font-medium text-white/50 hover:text-white transition-colors flex items-center gap-1.5"
+            href="/mcp" // ← /ambassadorから変更
+            className="text-sm font-medium text-white/50 hover:text-white transition-colors flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/5"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] animate-pulse" />
-            Ambassador
+            <Bot className="w-4 h-4 text-[#D97706]" />
+            AI Agent
           </a>
         </div>
 
@@ -98,11 +97,11 @@ export default function Navbar() {
                 </button>
               ))}
               <a
-                href="/ambassador"
+                href="/mcp" // ← /ambassadorから変更
                 className="text-left text-xl font-serif text-white/70 py-3 border-b border-white/5 flex items-center gap-2"
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] animate-pulse" />
-                Ambassador
+                <Bot className="w-5 h-5 text-[#D97706]" />
+                AI Agent
               </a>
               <a
                 href="https://axs.pizza"

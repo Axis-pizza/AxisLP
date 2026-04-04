@@ -19,7 +19,7 @@ export default function Footer() {
     <footer className="py-16 md:py-24 relative z-10 px-6 border-t border-white/5 bg-black">
       <div className="max-w-7xl mx-auto flex flex-col items-center">
         <h2 className="text-3xl md:text-5xl font-serif font-normal mb-8 tracking-tighter text-white/80">
-          Axis
+        <img src="/logo.svg" alt="Axis" className="h-20 w-auto" />
         </h2>
         <div className="flex gap-8 md:gap-12 mb-12">
           <a

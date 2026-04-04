@@ -184,18 +184,18 @@ export default function Hero() {
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 w-full max-w-4xl mx-auto pt-20 pointer-events-auto">
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="font-serif font-normal text-5xl sm:text-7xl md:text-8xl lg:text-[11rem] leading-[0.9] tracking-[-0.04em] text-white mb-8 drop-shadow-2xl"
-        >
-          Your idea.
-          <br />
-          <span className="text-gold-gradient font-normal pr-4">
-            Your ETF.
-          </span>
-        </motion.h1>
+  <motion.h1
+    initial={{ opacity: 0, y: 30 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.35, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+    className="font-serif font-normal text-4xl sm:text-5xl md:text-6xl lg:text-[5.5rem] leading-[1.1] tracking-[-0.01em] text-white mb-10 drop-shadow-2xl"
+  >
+    <span className="whitespace-nowrap">Create crypto baskets.</span>
+    <br />
+    <span className="whitespace-nowrap">Copy top traders.</span>
+    <br />
+    <span className="whitespace-nowrap text-gold-gradient">One swipe.</span>
+  </motion.h1>
 
         <motion.h2
           initial={{ opacity: 0 }}

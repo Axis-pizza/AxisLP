@@ -1,19 +1,26 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   AXIS BRAND SYSTEM — Cinematic Heavy: Void Black × Reddish Copper-Gold
+   ─────────────────────────────────────────────────────────────────────────
+   Core accent: #C77D36 = rgb(199, 125, 54) (18K rose-gold / forge-bronze)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 @theme {
-  /* タイポグラフィ: 見出しはセリフ、数字はサンセリフでメリハリをつける */
   --font-serif: "Lora", "Times New Roman", serif;
   --font-sans: "Lora", "Times New Roman", serif;
 
-  /* カラーパレット: 画像から抽出した深い黒と鋭いゴールド */
-  --color-obsidian: #050505;
-  --color-charcoal: #0F0F0F;
-  --color-gold-light: #FCD34D; /* 輝くハイライト */
-  --color-gold-base: #D97706;  /* ベースの金 */
-  --color-gold-dark: #78350F;  /* 深いブロンズ */
+  /* ── Void Backgrounds ── */
+  --color-obsidian: #020201;    /* cinema void — warm absolute black */
+  --color-charcoal: #090705;    /* base surface — faint warm tint */
+
+  /* ── Axis Gold Scale: 18K Rose-Gold / Copper-Bronze ── */
+  --color-gold-light: #F4DFBE;  /* highlight edge — pale warm cream */
+  --color-gold-base: #C77D36;   /* AXIS GOLD — 18K Rose-Bronze */
+  --color-gold-dark: #6B3716;   /* shadow edge / border */
   --color-accent-green: #10B981; /* 投資のプラス表示用 */
 
-  /* アニメーション定義 */
+  /* ── アニメーション定義 ── */
   @keyframes shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
@@ -25,28 +32,70 @@
   }
 }
 
+:root {
+  /* ─────────────────────────────────────────────────────────────────────
+     METALLIC GRADIENTS
+     Vertical foil: specular peak → lit face → reddish core → dark shadow → void.
+  ───────────────────────────────────────────────────────────────────────── */
+  --gold-text: linear-gradient(
+    180deg,
+    #F4DFBE  0%,    /* champagne specular */
+    #E8C28A 18%,    /* bright lit face */
+    #C77D36 46%,    /* reddish core midtone */
+    #6B3716 78%,    /* deep copper shadow */
+    #1A0A04 100%    /* void */
+  );
+
+  --gold-shimmer: linear-gradient(
+    115deg,
+    #1A0A04  0%,    /* void */
+    #6B3716 14%,    /* dark reddish shadow */
+    #C77D36 30%,    /* core bronze */
+    #F4DFBE 50%,    /* specular peak — hot center */
+    #C77D36 70%,    /* core bronze */
+    #6B3716 86%,    /* dark reddish shadow */
+    #0D0401 100%    /* deep void */
+  );
+}
+
 /* --- ベース設定 --- */
 body {
   background-color: var(--color-obsidian);
-  color: #E7E5E4;
+  color: #e8ddd4;
   font-family: var(--font-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(120, 53, 15, 0.15), transparent 60%),
-    linear-gradient(to bottom, #000000, #050505);
+    radial-gradient(circle at 50% 0%, rgba(199, 125, 54, 0.12), transparent 60%),
+    linear-gradient(to bottom, #000000, #020201);
   min-height: 100vh;
 }
 
-/* --- 高級ガラスカード (Frame 38の再現) --- */
-@utility card-glass {
-  /* 背景: 半透明の黒 + ノイズ + 上からの微妙な光 */
-  background: 
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.6) 100%),
-    rgba(10, 10, 10, 0.7);
-  
-  backdrop-filter: blur(24px);
-  border-radius: 24px;
+/* Scrollbar — copper thread on void */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(199, 125, 54, 0.60), rgba(107, 55, 22, 0.30));
+  border-radius: 3px;
+}
+::selection {
+  background: #C77D36;
+  color: #000;
+}
 
-  /* ボーダー: 上部は白っぽく（反射）、下部はゴールド（照り返し） */
+/* --- 高級ガラスカード (Cinematic Heavy仕様) --- */
+@utility card-glass {
+  background: 
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.6) 100%),
+    rgba(10, 5, 2, 0.20);
+  
+  backdrop-filter: blur(24px) saturate(160%) brightness(1.07);
+  border-radius: 24px;
   border: 1px solid transparent;
   mask-image: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
@@ -54,25 +103,25 @@ body {
   
   position: relative;
   box-shadow: 
-    0 20px 50px -10px rgba(0, 0, 0, 0.8),
-    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    0 20px 50px -10px rgba(0, 0, 0, 0.9),
+    inset 0 1px 1px rgba(199, 125, 54, 0.40), /* copper light on top edge */
+    inset 0 -1px 0 rgba(10, 5, 2, 0.30);
   
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* カードの枠線（擬似要素でグラデーションボーダーを作る手法） */
 .card-glass::before {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: 24px;
-  padding: 1px; /* ボーダーの太さ */
+  padding: 1px;
   background: linear-gradient(
     160deg, 
-    rgba(255, 255, 255, 0.2) 0%, 
-    rgba(255, 255, 255, 0.05) 30%, 
-    rgba(217, 119, 6, 0.1) 60%, 
-    rgba(217, 119, 6, 0.6) 100%
+    rgba(255, 255, 255, 0.15) 0%, 
+    rgba(199, 125, 54, 0.05) 30%, 
+    rgba(199, 125, 54, 0.1) 60%, 
+    rgba(199, 125, 54, 0.6) 100% /* #C77D36 fallback */
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -80,7 +129,6 @@ body {
   pointer-events: none;
 }
 
-/* 地面の照り返し（アンダーグロー） */
 .card-glass::after {
   content: "";
   position: absolute;
@@ -88,7 +136,7 @@ body {
   left: 10%;
   right: 10%;
   height: 40px;
-  background: radial-gradient(ellipse at center, rgba(217, 119, 6, 0.4), transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(199, 125, 54, 0.35), transparent 70%);
   filter: blur(20px);
   z-index: -1;
   opacity: 0.6;
@@ -97,7 +145,9 @@ body {
 
 .card-glass:hover {
   transform: translateY(-5px) scale(1.01);
-  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9);
+  box-shadow: 
+    0 30px 60px -12px rgba(0, 0, 0, 0.95),
+    inset 0 1.5px 1px rgba(199, 125, 54, 0.50);
 }
 
 .card-glass:hover::after {
@@ -106,17 +156,18 @@ body {
 
 /* --- タイポグラフィユーティリティ --- */
 @utility text-gold-gradient {
-  background: linear-gradient(135deg, #FFFBEB 0%, #FCD34D 40%, #D97706 100%);
+  background: var(--gold-text);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-shadow: none;
 }
 
 @utility text-glow {
-  text-shadow: 0 0 20px rgba(217, 119, 6, 0.3);
+  text-shadow: 0 0 20px rgba(199, 125, 54, 0.4);
 }
 
-/* --- Liquid Glass CTA Button --- */
+/* --- Liquid Glass CTA Button (Copper Gold仕様) --- */
 .btn-liquid-glass {
   position: relative;
   display: inline-flex;
@@ -126,17 +177,17 @@ body {
   border-radius: 100px;
   font-weight: 500;
   font-size: 0.875rem;
-  color: #ffffff;
+  color: #E8C28A;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(199, 125, 54, 0.10);
   backdrop-filter: blur(30px) saturate(180%);
   -webkit-backdrop-filter: blur(30px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(199, 125, 54, 0.30);
   box-shadow:
-    0 8px 32px 0 rgba(0, 0, 0, 0.4),
-    inset 0 1px 1px rgba(255, 255, 255, 0.2),
-    inset 0 -2px 10px rgba(217, 119, 6, 0.15);
+    inset 0 1px 1px rgba(199, 125, 54, 0.40),
+    inset 0 -1px 0 rgba(10, 5, 2, 0.25),
+    0 4px 20px rgba(0, 0, 0, 0.55);
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
@@ -151,7 +202,7 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.2),
+    rgba(244, 223, 190, 0.2), /* champagne highlight */
     transparent
   );
   transform: skewX(-20deg);
@@ -160,14 +211,14 @@ body {
 
 .btn-liquid-glass:hover {
   transform: translateY(-3px) scale(1.02);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(199, 125, 54, 0.18);
+  border: 1px solid rgba(199, 125, 54, 0.50);
   box-shadow:
-    0 15px 40px -5px rgba(217, 119, 6, 0.4),
-    inset 0 1px 2px rgba(255, 255, 255, 0.4),
-    inset 0 -2px 15px rgba(217, 119, 6, 0.3);
-  color: #fffbeb;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    inset 0 1px 1px rgba(244, 223, 190, 0.50),
+    inset 0 -1px 0 rgba(10, 5, 2, 0.20),
+    0 0 14px 4px rgba(199, 125, 54, 0.32); /* warm fire glow */
+  color: #FCF6EC;
+  text-shadow: 0 0 10px rgba(244, 223, 190, 0.3);
 }
 
 .btn-liquid-glass:hover::before {
@@ -176,9 +227,6 @@ body {
 
 .btn-liquid-glass:active {
   transform: translateY(1px) scale(0.98);
-}
-
-::selection {
-  background: #d97706;
-  color: #000;
+  background: rgba(199, 125, 54, 0.06);
+  box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.35);
 }

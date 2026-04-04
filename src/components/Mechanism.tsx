@@ -2,164 +2,271 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Zap, ShieldCheck } from "lucide-react";
+import { Layers, Activity, Cpu, ArrowRight, Network } from "lucide-react";
 
-const AuctionCycleAnimation = () => {
-  const [phase, setPhase] = useState<"bid" | "win" | "yield">("bid");
+import { Lora } from "next/font/google";
+
+const lora = Lora({
+  subsets: ["latin"],
+  weight: ["400"],
+  display: "swap",
+});
+
+type Phase = "accumulate" | "compete" | "execute" | "route";
+
+const CycleAnimation = () => {
+  const [phase, setPhase] = useState<Phase>("accumulate");
 
   useEffect(() => {
     const cycle = async () => {
-      setPhase("bid");
+      setPhase("accumulate");
       await new Promise((r) => setTimeout(r, 3500));
-      setPhase("win");
-      await new Promise((r) => setTimeout(r, 2000));
-      setPhase("yield");
-      await new Promise((r) => setTimeout(r, 3500));
+      setPhase("compete");
+      await new Promise((r) => setTimeout(r, 3000));
+      setPhase("execute");
+      await new Promise((r) => setTimeout(r, 3000));
+      setPhase("route");
+      await new Promise((r) => setTimeout(r, 4000));
       cycle();
     };
     cycle();
   }, []);
 
   return (
-    <div className="card-glass relative w-full h-[380px] sm:h-[480px] md:h-[500px] flex flex-col items-center justify-center p-5 sm:p-8 overflow-hidden">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(217,119,6,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(217,119,6,0.05)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_100%)] pointer-events-none" />
+    <div className="card-glass relative w-full h-[400px] sm:h-[480px] md:h-[500px] flex flex-col items-center justify-center p-5 sm:p-8 overflow-hidden rounded-2xl border border-white/5 bg-black/40 backdrop-blur-md">
+      {/* Background Orbs */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[20%] left-[20%] w-[300px] h-[300px] bg-[#D97706]/10 rounded-full blur-[80px]" />
+      </div>
 
       <AnimatePresence mode="wait">
-        {phase === "bid" && (
+        {/* ================= PHASE 1: ACCUMULATE ================= */}
+        {phase === "accumulate" && (
           <motion.div
-            key="bid"
+            key="accumulate"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
+            exit={{ opacity: 0, scale: 1.05, filter: "blur(5px)" }}
             className="flex flex-col items-center w-full max-w-lg z-10"
           >
-            <h3 className="text-gold-gradient text-xs font-normal tracking-widest uppercase mb-8 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#D97706] animate-pulse shadow-[0_0_10px_#D97706]" />{" "}
-              Phase 1: Auction
+            <h3 className="text-[#D97706] text-xs tracking-widest uppercase mb-8 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#D97706] animate-pulse" />
+              Phase 1: Accumulate
             </h3>
-            <div className="relative w-full h-40 flex items-end justify-center gap-4">
+
+            <div className="w-full flex flex-col gap-6">
+              {/* Slot Counter */}
+              <div className="flex flex-col items-center mb-2">
+                <span className={`text-white/40 text-sm mb-2 ${lora.className}`}>10-Slot Window</span>
+                <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-[#D97706]/70"
+                    initial={{ width: "0%" }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 3, ease: "linear" }}
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-between items-end h-24 gap-4">
+                {/* User Intents Stack */}
+                <div className="flex-1 flex flex-col justify-end gap-1 items-center">
+                  <span className={`text-white/40 text-xs mb-2 ${lora.className}`}>User Intents</span>
+                  {[0, 1, 2, 3].map((i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.5 }}
+                      className="w-16 h-3 bg-white/10 rounded-sm border border-white/5"
+                    />
+                  ))}
+                </div>
+
+                {/* Basket Drift Meter */}
+                <div className="flex-1 flex flex-col items-center">
+                  <span className={`text-white/40 text-xs mb-2 ${lora.className}`}>Basket Drift</span>
+                  <div className="w-full h-16 bg-white/5 rounded-lg border border-white/10 relative overflow-hidden flex items-end justify-center pb-2">
+                    <motion.div
+                      initial={{ height: "10%" }}
+                      animate={{ height: "80%" }}
+                      transition={{ duration: 3, ease: "easeInOut" }}
+                      className="w-6 bg-gradient-to-t from-transparent to-[#FCD34D]/50 rounded-t-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* ================= PHASE 2: COMPETE ================= */}
+        {phase === "compete" && (
+          <motion.div
+            key="compete"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20, filter: "blur(5px)" }}
+            className="flex flex-col items-center w-full z-10"
+          >
+            <h3 className="text-[#D97706] text-xs tracking-widest uppercase mb-8 flex items-center gap-2">
+              <Activity className="w-4 h-4 text-[#D97706]" />
+              Phase 2: Jito Bundle Competition
+            </h3>
+
+            <div className="flex justify-center gap-4 w-full">
               {[
-                { h: "40%", val: "10 SOL", delay: 0 },
-                { h: "60%", val: "12 SOL", delay: 1 },
-                { h: "85%", val: "15 SOL", delay: 2, win: true },
-              ].map((bot, i) => (
+                { bid: "0.25 SOL", edge: "Low", delay: 0 },
+                { bid: "0.40 SOL", edge: "Mid", delay: 0.3 },
+                { bid: "0.85 SOL", edge: "Optimal", delay: 0.6, win: true },
+              ].map((bundle, i) => (
                 <motion.div
                   key={i}
-                  initial={{ height: "0%", opacity: 0 }}
-                  animate={{ height: bot.h, opacity: 1 }}
-                  transition={{ delay: bot.delay * 0.5, type: "spring" }}
-                  className={`w-14 md:w-16 rounded-t-lg relative flex justify-center backdrop-blur-sm border-t border-l border-r border-white/10 ${
-                    bot.win
-                      ? "bg-gradient-to-t from-[#78350F] to-[#D97706] shadow-[0_0_40px_rgba(217,119,6,0.5)] z-10"
-                      : "bg-white/5"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: bundle.delay }}
+                  className={`relative p-4 rounded-xl border flex flex-col items-center w-28 sm:w-32 ${
+                    bundle.win
+                      ? "border-[#D97706]/50 bg-gradient-to-b from-[#78350F]/20 to-transparent shadow-[0_0_30px_rgba(217,119,6,0.15)]"
+                      : "border-white/5 bg-white/[0.02]"
                   }`}
                 >
-                  <motion.span
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: -25 }}
-                    transition={{ delay: bot.delay * 0.5 + 0.3 }}
-                    className={`absolute -top-8 text-xs font-bold font-sans whitespace-nowrap ${
-                      bot.win ? "text-[#FCD34D]" : "text-white/40"
-                    }`}
-                  >
-                    {bot.val}
-                  </motion.span>
-                  {bot.win && (
+                  <Layers className={`w-6 h-6 mb-3 ${bundle.win ? "text-[#D97706]" : "text-white/20"}`} />
+                  <span className={`text-sm text-white mb-1 ${lora.className}`}>{bundle.bid}</span>
+                  <span className="text-[10px] text-white/30 uppercase tracking-widest">{bundle.edge} edge</span>
+                  
+                  {bundle.win && (
                     <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 2 }}
-                      className="absolute -top-16 bg-white text-black text-[10px] font-bold px-2 py-1 rounded shadow-lg"
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 1.2 }}
+                      className="absolute -top-3 bg-[#D97706]/20 border border-[#D97706]/50 text-[#FCD34D] text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full"
                     >
-                      WINNER
+                      Winning Bundle
                     </motion.div>
                   )}
                 </motion.div>
               ))}
             </div>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.5 }}
+              className={`text-white/40 text-sm mt-8 text-center ${lora.className}`}
+            >
+              Batch boundary reached.<br/>Sealed-bid equivalent auction resolves.
+            </motion.p>
           </motion.div>
         )}
 
-        {phase === "win" && (
+        {/* ================= PHASE 3: EXECUTE ================= */}
+        {phase === "execute" && (
           <motion.div
-            key="win"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            key="execute"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1, filter: "blur(5px)" }}
             className="flex flex-col items-center z-10"
           >
-            <div className="w-24 h-24 rounded-full border border-[#D97706]/30 bg-[#78350F]/10 flex items-center justify-center relative mb-6 shadow-[0_0_30px_rgba(217,119,6,0.2)]">
-              <ShieldCheck className="w-10 h-10 text-[#D97706]" />
-              <div className="absolute inset-0 border border-[#D97706]/50 rounded-full animate-ping opacity-50" />
-            </div>
-            <h3 className="text-2xl font-serif text-white mb-2">
-              License Minted
+            <h3 className="text-[#D97706] text-xs tracking-widest uppercase mb-8 flex items-center gap-2">
+              <Cpu className="w-4 h-4 text-[#D97706]" />
+              Phase 3: ClearBatch Execution
             </h3>
-            <div className="flex items-center gap-3 bg-black/40 px-4 py-2 rounded-lg border border-[#D97706]/20 shadow-inner">
-              <span className="text-white/40 text-xs uppercase tracking-wider">
-                Fee Rate
-              </span>
-              <span className="text-[#FCD34D] font-sans text-xl font-bold">
-                0.00%
-              </span>
+
+            <div className="relative flex flex-col items-center justify-center mb-6">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, ease: "linear", repeat: Infinity }}
+                className="w-32 h-32 rounded-full border border-dashed border-[#D97706]/30 flex items-center justify-center absolute"
+              />
+              <div className="w-24 h-24 rounded-full bg-[#78350F]/20 border border-[#D97706]/40 flex items-center justify-center backdrop-blur-md shadow-[0_0_40px_rgba(217,119,6,0.2)]">
+                <span className={`text-2xl text-white ${lora.className}`}>O(1)</span>
+              </div>
+            </div>
+
+            <h4 className={`text-xl text-white mb-3 ${lora.className}`}>State Transition</h4>
+            <div className="flex flex-col items-center gap-2">
+              <div className="bg-white/5 border border-white/10 px-4 py-1.5 rounded-full flex items-center gap-2">
+                <span className="text-white/40 text-[10px] uppercase tracking-widest">Compute</span>
+                <span className="text-[#FCD34D] text-sm font-mono">~38,000 CU</span>
+              </div>
+              <span className={`text-white/40 text-sm mt-2 ${lora.className}`}>Single aggregated execution</span>
             </div>
           </motion.div>
         )}
 
-        {phase === "yield" && (
+        {/* ================= PHASE 4: ROUTE VALUE ================= */}
+        {phase === "route" && (
           <motion.div
-            key="yield"
+            key="route"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, filter: "blur(5px)" }}
             className="flex flex-col items-center w-full z-10"
           >
-            <h3 className="text-emerald-400 text-sm font-normal tracking-widest uppercase mb-8 flex items-center gap-2">
-              <Zap size={14} className="fill-emerald-400" /> Phase 2: Value
-              Capture
+            <h3 className="text-[#D97706] text-xs tracking-widest uppercase mb-8 flex items-center gap-2">
+              <Network className="w-4 h-4 text-[#D97706]" />
+              Phase 4: Value Routing
             </h3>
-            <div className="flex gap-6 items-center justify-center w-full px-4">
-              <motion.div className="w-28 sm:w-36 p-4 rounded-xl border border-white/5 bg-white/5 flex flex-col items-center opacity-50 grayscale">
-                <span className="text-white/40 text-xs font-bold mb-2 uppercase">
-                  Legacy AMM
-                </span>
-                <span className="text-xl sm:text-2xl font-sans font-bold text-white">
-                  -13.7%
-                </span>
-              </motion.div>
 
-              <ArrowRight className="text-white/20 w-6 h-6" />
+            <div className="flex flex-col items-center w-full max-w-sm gap-4">
+              <div className="w-full text-center pb-4 border-b border-white/10 relative">
+                <span className={`text-white text-lg ${lora.className}`}>Gross Extraction Opportunity</span>
+                <motion.div 
+                  initial={{ height: 0 }} 
+                  animate={{ height: 20 }} 
+                  className="w-px bg-white/20 absolute -bottom-5 left-1/2 -translate-x-1/2" 
+                />
+              </div>
 
-              <motion.div
-                initial={{ scale: 0.9 }}
-                animate={{ scale: 1 }}
-                className="w-36 sm:w-48 p-5 rounded-xl border border-[#D97706]/50 bg-gradient-to-b from-[#78350F]/20 to-black flex flex-col items-center shadow-[0_0_50px_rgba(217,119,6,0.15)]"
-              >
-                <span className="text-[#D97706] text-xs font-bold mb-2 uppercase">
-                  Axis
-                </span>
-                <motion.span
-                  initial={{ scale: 0.5 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", delay: 0.4 }}
-                  className="text-3xl sm:text-5xl font-sans font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-[#FCD34D] drop-shadow-lg"
+              <div className="flex justify-between w-full mt-4">
+                {/* Searcher / Validator */}
+                <div className="flex flex-col gap-3 w-[45%]">
+                  <motion.div 
+                    initial={{ opacity: 0, x: -10 }} 
+                    animate={{ opacity: 1, x: 0 }} 
+                    transition={{ delay: 0.2 }}
+                    className="bg-white/5 border border-white/5 rounded-lg p-3 text-center"
+                  >
+                    <span className="text-white/30 text-[10px] uppercase tracking-widest block mb-1">Searcher</span>
+                    <span className={`text-white/60 text-sm ${lora.className}`}>Edge</span>
+                  </motion.div>
+                  <motion.div 
+                    initial={{ opacity: 0, x: -10 }} 
+                    animate={{ opacity: 1, x: 0 }} 
+                    transition={{ delay: 0.4 }}
+                    className="bg-white/5 border border-white/5 rounded-lg p-3 text-center"
+                  >
+                    <span className="text-white/30 text-[10px] uppercase tracking-widest block mb-1">Validator</span>
+                    <span className={`text-white/60 text-sm ${lora.className}`}>Tip Leakage</span>
+                  </motion.div>
+                </div>
+
+                {/* Protocol Internalized (Highlighted) */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.6 }}
+                  className="w-[50%] bg-gradient-to-b from-[#78350F]/30 to-black border border-[#D97706]/40 rounded-xl p-4 flex flex-col justify-center items-center shadow-[0_0_30px_rgba(217,119,6,0.15)] relative overflow-hidden"
                 >
-                  +4.1%
-                </motion.span>
-                <span className="text-xs text-[#D97706]/80 mt-2 font-mono">
-                  Real Yield APR
-                </span>
-              </motion.div>
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,#D97706_0%,transparent_70%)] opacity-20 pointer-events-none" />
+                  <span className="text-[#D97706] text-[10px] uppercase tracking-widest text-center mb-2">Protocol & LP</span>
+                  <span className={`text-white text-lg text-center leading-tight ${lora.className}`}>
+                    Internalized<br/>Value
+                  </span>
+                </motion.div>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="absolute bottom-0 left-0 h-[2px] bg-white/5 w-full">
+      {/* Progress Bar (Bottom) */}
+      <div className="absolute bottom-0 left-0 h-[1px] bg-white/5 w-full">
         <motion.div
-          className="h-full bg-[#D97706] box-shadow-[0_0_10px_#D97706]"
-          animate={{ width: ["0%", "100%"] }}
-          transition={{ duration: 9, ease: "linear", repeat: Infinity }}
+          className="h-full bg-gradient-to-r from-transparent via-[#D97706] to-transparent"
+          animate={{ x: ["-100%", "100%"] }}
+          transition={{ duration: 13.5, ease: "linear", repeat: Infinity }} // Total cycle time (3.5+3+3+4)
         />
       </div>
     </div>
@@ -168,23 +275,20 @@ const AuctionCycleAnimation = () => {
 
 export default function Mechanism() {
   return (
-    <section id="mechanism" className="relative py-20 sm:py-32 px-4 sm:px-6 bg-black">
+    <section id="mechanism" className="relative py-20 sm:py-32 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
         <div className="text-center lg:text-left space-y-6">
-          <h2 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-normal leading-tight text-white">
+          <h2 className={`text-4xl sm:text-5xl lg:text-6xl leading-[1.1] text-white ${lora.className}`}>
             Don&apos;t pay for <br />
             <span className="text-white/40">rebalancing.</span> <br />
-            <span className="text-gold-gradient">Get paid for it.</span>
+            <span className="text-white">Get paid for it.</span>
           </h2>
-          <p className="text-sm sm:text-base text-white/60 leading-relaxed max-w-md mx-auto lg:mx-0">
-            Traditional AMMs leak value to arbitrage bots. Axis internalizes
-            this leakage through a{" "}
-            <strong className="text-white">License Auction</strong>, turning
-            loss into yield for fund creators and LPs.
+          <p className={`text-lg text-white/50 leading-relaxed max-w-md mx-auto lg:mx-0 ${lora.className}`}>
+            Axis batches ETF flow every 10 slots, auctions batch-clearing rights through Jito bundle competition, and executes an O(1) ClearBatch. Instead of leaking value entirely to external extraction paths, the protocol internalizes part of that value for LPs and creators.
           </p>
         </div>
         <div className="w-full">
-          <AuctionCycleAnimation />
+          <CycleAnimation />
         </div>
       </div>
     </section>

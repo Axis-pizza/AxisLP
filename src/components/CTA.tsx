@@ -20,7 +20,7 @@ export default function CTA() {
       >
         <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-normal text-white mb-6 leading-tight">
           Ready to build the{" "}
-          <span className="text-gold-gradient">future of indexing</span>?
+          <br></br><span className="text-gold-gradient">future of indexing?</span>
         </h2>
         <p className="text-white/50 text-base sm:text-lg mb-10 max-w-xl mx-auto">
           Whether you&apos;re an investor looking for exposure or a strategist

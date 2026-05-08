@@ -2,20 +2,22 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Bot } from "lucide-react"; // Botアイコンを追加
+import { Menu, X } from "lucide-react";
 
 const navLinks = [
-  { name: "Home", id: "hero" },
   { name: "How it Works", id: "how-it-works" },
+  { name: "Structure", id: "structure" },
   { name: "Mechanism", id: "mechanism" },
+  { name: "Economics", id: "economics" },
+  { name: "Roadmap", id: "roadmap" },
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const scrollTo = (id: string) => {
-    if (window.location.pathname !== '/') {
-      window.location.href = '/#' + id;
+    if (window.location.pathname !== "/") {
+      window.location.href = "/#" + id;
       return;
     }
     const el = document.getElementById(id);
@@ -24,10 +26,10 @@ export default function Navbar() {
   };
 
   const goHome = () => {
-    if (window.location.pathname !== '/') {
-      window.location.href = '/';
+    if (window.location.pathname !== "/") {
+      window.location.href = "/";
     } else {
-      scrollTo('hero');
+      scrollTo("hero");
     }
   };
 
@@ -41,7 +43,7 @@ export default function Navbar() {
           <img src="/logo.svg" alt="Axis" className="h-12 w-auto" />
         </button>
 
-        <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+        <div className="hidden md:flex items-center gap-7 absolute left-1/2 -translate-x-1/2">
           {navLinks.map((item) => (
             <button
               key={item.name}
@@ -52,10 +54,9 @@ export default function Navbar() {
             </button>
           ))}
           <a
-            href="/mcp" // ← /ambassadorから変更
-            className="text-sm font-medium text-white/50 hover:text-white transition-colors flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/5"
+            href="/mcp"
+            className="text-sm font-medium text-white/50 hover:text-white transition-colors"
           >
-            <Bot className="w-4 h-4 text-[#D97706]" />
             AI Agent
           </a>
         </div>
@@ -65,7 +66,7 @@ export default function Navbar() {
             href="https://axs.pizza"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden md:inline-flex text-sm font-bold uppercase tracking-wider px-5 py-2.5 rounded-full border border-[#D97706]/40 text-[#FCD34D] hover:bg-[#D97706]/10 transition-all"
+            className="hidden md:inline-flex btn-liquid-glass !py-2 !px-6 !text-xs"
           >
             Launch App
           </a>
@@ -86,28 +87,30 @@ export default function Navbar() {
             exit={{ height: 0, opacity: 0 }}
             className="absolute top-full left-0 w-full bg-black/95 backdrop-blur-lg border-b border-white/10 overflow-hidden md:hidden"
           >
-            <div className="p-6 flex flex-col gap-4">
+            <div className="p-6 flex flex-col gap-1">
               {navLinks.map((item) => (
                 <button
                   key={item.name}
-                  className="text-left text-xl text-white/70 py-3 border-b border-white/5"
-                  onClick={() => { scrollTo(item.id); setIsOpen(false); }}
+                  className="text-left text-lg font-serif text-white/70 py-3 border-b border-white/5"
+                  onClick={() => {
+                    scrollTo(item.id);
+                    setIsOpen(false);
+                  }}
                 >
                   {item.name}
                 </button>
               ))}
               <a
-                href="/mcp" // ← /ambassadorから変更
-                className="text-left text-xl font-serif text-white/70 py-3 border-b border-white/5 flex items-center gap-2"
+                href="/mcp"
+                className="text-left text-lg font-serif text-white/70 py-3 border-b border-white/5"
               >
-                <Bot className="w-5 h-5 text-[#D97706]" />
                 AI Agent
               </a>
               <a
                 href="https://axs.pizza"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2 text-center text-sm font-bold uppercase tracking-wider px-5 py-3 rounded-full border border-[#D97706]/40 text-[#FCD34D] hover:bg-[#D97706]/10 transition-all"
+                className="mt-4 btn-liquid-glass self-start"
               >
                 Launch App
               </a>

@@ -3,9 +3,11 @@
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import WhyAxis from "@/components/WhyAxis";
 import HowItWorks from "@/components/HowItWorks";
+import Structure from "@/components/Structure";
 import Mechanism from "@/components/Mechanism";
+import Economics from "@/components/Economics";
+import Roadmap from "@/components/Roadmap";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 
@@ -22,11 +24,15 @@ export default function AxisLandingPage() {
       <div className="relative z-10 flex flex-col">
         <Hero />
         <Divider />
-        <WhyAxis />
-        <Divider />
         <HowItWorks />
         <Divider />
+        <Structure />
+        <Divider />
         <Mechanism />
+        <Divider />
+        <Economics />
+        <Divider />
+        <Roadmap />
         <Divider />
         <CTA />
       </div>

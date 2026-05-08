@@ -1,215 +1,191 @@
 "use client";
 
-import React, { useRef, useMemo } from "react";
-import { motion } from "framer-motion";
-import { Canvas, useFrame } from "@react-three/fiber";
-import * as THREE from "three";
+import { motion, Variants } from "framer-motion";
 
 /* -------------------------------------------------------------------------- */
-/* 3D BACKGROUND                                                               */
+/* Per-character ink-bleed reveal                                              */
 /* -------------------------------------------------------------------------- */
-const TOKENS = ["SOL", "BTC", "ETH", "USDC", "JUP", "AXIS"];
-const COINS_PER_TOKEN = 25; // reduced from 50 for better mobile perf
-const FIELD_SIZE = 10;
-const FIELD_DEPTH = 5;
-const GOLD_CORE = "#C77D36";
-const GOLD_DARK = "#3D1A08";
+const lineVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.028 },
+  },
+};
 
-function createCoinTexture(symbol: string) {
-  const size = 256;
-  const canvas = document.createElement("canvas");
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext("2d")!;
+const charVariants: Variants = {
+  hidden: { opacity: 0, y: 14, filter: "blur(10px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+  },
+};
 
-  ctx.fillStyle = GOLD_CORE;
-  ctx.fillRect(0, 0, size, size);
-
-  ctx.beginPath();
-  ctx.arc(size / 2, size / 2, size / 2 - 8, 0, Math.PI * 2);
-  ctx.strokeStyle = GOLD_DARK;
-  ctx.lineWidth = 12;
-  ctx.stroke();
-
-  ctx.fillStyle = GOLD_DARK;
-  ctx.font = `bold ${symbol.length >= 4 ? "56" : "72"}px "Times New Roman", serif`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(symbol, size / 2, size / 2 + 5);
-
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.anisotropy = 16;
-  return texture;
-}
-
-function TokenSwarm({ symbol }: { symbol: string }) {
-  const meshRef = useRef<THREE.InstancedMesh>(null!);
-  const dummy = useMemo(() => new THREE.Object3D(), []);
-
-  const { geometry, materials, motionData } = useMemo(() => {
-    const geo = new THREE.CylinderGeometry(0.18, 0.18, 0.04, 32);
-    geo.rotateX(Math.PI / 2);
-
-    const faceTex = createCoinTexture(symbol);
-
-    const sideMat = new THREE.MeshStandardMaterial({
-      color: GOLD_CORE,
-      metalness: 1.0,
-      roughness: 0.3,
-    });
-    const faceMat = new THREE.MeshStandardMaterial({
-      map: faceTex,
-      metalness: 0.8,
-      roughness: 0.4,
-    });
-    const mats = [sideMat, faceMat, faceMat];
-
-    const data = Array.from({ length: COINS_PER_TOKEN }, () => ({
-      pos: new THREE.Vector3(
-        (Math.random() - 0.5) * FIELD_SIZE,
-        (Math.random() - 0.5) * FIELD_SIZE,
-        (Math.random() - 0.5) * FIELD_DEPTH - 2
-      ),
-      velocity: new THREE.Vector3(
-        (Math.random() - 0.5) * 0.005,
-        (Math.random() - 0.5) * 0.005 + 0.002,
-        (Math.random() - 0.5) * 0.005
-      ),
-      rotSpeed: new THREE.Vector3(
-        (Math.random() - 0.5) * 0.02,
-        (Math.random() - 0.5) * 0.02,
-        (Math.random() - 0.5) * 0.02
-      ),
-      rotation: new THREE.Vector3(
-        Math.random() * Math.PI * 2,
-        Math.random() * Math.PI * 2,
-        Math.random() * Math.PI * 2
-      ),
-    }));
-
-    return { geometry: geo, materials: mats, motionData: data };
-  }, [symbol]);
-
-  useFrame(() => {
-    if (!meshRef.current) return;
-
-    motionData.forEach((data, i) => {
-      data.pos.add(data.velocity);
-
-      if (data.pos.y > FIELD_SIZE / 2) data.pos.y = -FIELD_SIZE / 2;
-      if (data.pos.y < -FIELD_SIZE / 2) data.pos.y = FIELD_SIZE / 2;
-      if (data.pos.x > FIELD_SIZE / 2) data.pos.x = -FIELD_SIZE / 2;
-      if (data.pos.x < -FIELD_SIZE / 2) data.pos.x = FIELD_SIZE / 2;
-
-      data.rotation.add(data.rotSpeed);
-
-      dummy.position.copy(data.pos);
-      dummy.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
-      dummy.updateMatrix();
-      meshRef.current.setMatrixAt(i, dummy.matrix);
-    });
-
-    meshRef.current.instanceMatrix.needsUpdate = true;
-  });
-
+function InkLine({
+  text,
+  delay = 0,
+  className,
+  charClassName,
+}: {
+  text: string;
+  delay?: number;
+  className?: string;
+  charClassName?: string;
+}) {
   return (
-    <instancedMesh
-      ref={meshRef}
-      args={[geometry, materials, COINS_PER_TOKEN]}
-      castShadow
-      receiveShadow
-    />
-  );
-}
-
-function SweepLight() {
-  const lightRef = useRef<THREE.PointLight>(null!);
-
-  useFrame(({ clock }) => {
-    if (!lightRef.current) return;
-    const t = clock.getElapsedTime();
-    lightRef.current.position.x = Math.sin(t * 0.4) * 5;
-    lightRef.current.position.y = Math.cos(t * 0.6) * 1.5 + 1.0;
-    lightRef.current.intensity = 3.0 + Math.sin(t * 2) * 1.5;
-  });
-
-  return (
-    <pointLight
-      ref={lightRef}
-      position={[0, 0, 2]}
-      color="#FFE4B8"
-      distance={10}
-      decay={1.5}
-    />
-  );
-}
-
-function Scene() {
-  return (
-    <>
-      <ambientLight intensity={0.15} color="#C8D4E0" />
-      <directionalLight
-        position={[4, 5, 4]}
-        intensity={1.5}
-        color="#C77D36"
-        castShadow
-      />
-      <SweepLight />
-      {TOKENS.map((token) => (
-        <TokenSwarm key={token} symbol={token} />
+    <motion.span
+      aria-label={text}
+      className={className}
+      variants={lineVariants}
+      initial="hidden"
+      animate="visible"
+      transition={{ delayChildren: delay, staggerChildren: 0.028 }}
+    >
+      {Array.from(text).map((char, i) => (
+        <motion.span
+          key={i}
+          aria-hidden
+          variants={charVariants}
+          className={`inline-block ${charClassName ?? ""}`}
+          style={{ whiteSpace: "pre" }}
+        >
+          {char === " " ? " " : char}
+        </motion.span>
       ))}
-    </>
+    </motion.span>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/* HERO SECTION                                                                */
+/* HERO SECTION — Text-focused Old-world painted-canvas treatment             */
 /* -------------------------------------------------------------------------- */
 export default function Hero() {
+  // Total time the headline takes to type in: delay + (chars × stagger) + char duration tail
+  const HEADLINE_LEAD_DELAY = 0.9; // wait for the loading bar to draw in
+  const LINE_1 = "You have a thesis,";
+  const LINE_2 = "So why don’t you have a token for it?";
+  const LINE_2_DELAY =
+    HEADLINE_LEAD_DELAY + LINE_1.length * 0.028 + 0.15;
+  const SUBTITLE_DELAY =
+    LINE_2_DELAY + LINE_2.length * 0.028 + 0.25;
+
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex flex-col justify-center items-center overflow-hidden"
     >
+      {/* ── Painted-canvas backdrop ─────────────────────────────────────── */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <Canvas
-          camera={{ position: [0, 0, 5.0], fov: 45 }}
-          gl={{ antialias: true, alpha: true }}
-          dpr={[1, 2]}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 60% at 50% 35%, rgba(199,125,54,0.22), transparent 70%), radial-gradient(ellipse 60% 50% at 50% 90%, rgba(107,55,22,0.25), transparent 70%), linear-gradient(180deg, #050302 0%, #020201 100%)",
+          }}
+        />
+        <svg
+          className="absolute inset-0 w-full h-full opacity-[0.08] mix-blend-overlay"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <Scene />
-        </Canvas>
-        {/* Translucent overlay to soften the 3D background */}
-        <div className="absolute inset-0 bg-black/50" />
+          <filter id="paperGrain">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.85"
+              numOctaves="2"
+              stitchTiles="stitch"
+            />
+            <feColorMatrix
+              type="matrix"
+              values="0 0 0 0 0.78  0 0 0 0 0.49  0 0 0 0 0.21  0 0 0 0.6 0"
+            />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#paperGrain)" />
+        </svg>
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 90% 70% at 50% 45%, transparent 30%, rgba(0,0,0,0.55) 80%, rgba(0,0,0,0.85) 100%)",
+          }}
+        />
       </div>
 
-      <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 w-full max-w-7xl mx-auto pt-20 pointer-events-auto">
-  <motion.h1
-    initial={{ opacity: 0, y: 30 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.35, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-    className="font-serif font-normal text-4xl sm:text-5xl md:text-6xl lg:text-[6.5rem] leading-[1.1] tracking-[-0.04em] text-white mb-10 drop-shadow-2xl"
-  >
-    Anyone can ETF anything 
-    on Solana.
-  </motion.h1>
-
-        <motion.h2
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.55, duration: 0.8 }}
-          className="text-lg sm:text-xl md:text-2xl font-normal text-white/50 tracking-wide mb-16 max-w-2xl"
-        >
-          The first onchain index funds. Build, manage, and scale your index
-          fund in seconds.
-        </motion.h2>
-
+      {/* ── Content ─────────────────────────────────────────────────────── */}
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-6 py-24 flex flex-col items-center text-center">
+        {/* Loading bar — thin gilded line that draws in first */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          aria-hidden
+          className="relative h-px overflow-hidden mb-12 w-32 sm:w-48"
+        >
+          <motion.div
+            initial={{ scaleX: 0, opacity: 0.9 }}
+            animate={{ scaleX: 1, opacity: [0.9, 1, 0.45] }}
+            transition={{
+              duration: 0.8,
+              ease: [0.22, 1, 0.36, 1],
+              opacity: { duration: 1.4, times: [0, 0.6, 1] },
+            }}
+            className="origin-left h-px w-full"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent 0%, rgba(244,223,190,0.8) 30%, rgba(199,125,54,0.9) 65%, transparent 100%)",
+            }}
+          />
+        </motion.div>
+
+        {/* Headline — letter-by-letter ink reveal */}
+        <h1
+          className="font-serif font-normal text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] leading-[1.05] tracking-[-0.025em] text-white"
+          style={{
+            textShadow:
+              "0 1px 0 rgba(255,255,255,0.10), 0 0 40px rgba(255,255,255,0.08)",
+          }}
+        >
+          <InkLine
+            text={LINE_1}
+            delay={HEADLINE_LEAD_DELAY}
+            className="block"
+          />
+          <InkLine
+            text={LINE_2}
+            delay={LINE_2_DELAY}
+            className="block mt-4 text-white/90"
+          />
+        </h1>
+
+        {/* Subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{
-            delay: 0.75,
-            duration: 0.6,
+            delay: SUBTITLE_DELAY,
+            duration: 0.9,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="mt-10 font-serif text-xl sm:text-2xl md:text-3xl text-white/60 tracking-wide max-w-3xl"
+        >
+          The first onchain index funds — mint your conviction in seconds.
+        </motion.p>
+
+        {/* Divider ornament — fades in with subtle ❦ */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: SUBTITLE_DELAY + 0.3, duration: 0.9 }}
+          className="flex items-center gap-4 my-12 text-white/40 justify-center w-full"
+          aria-hidden
+        >
+          
+        </motion.div>
+
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            delay: SUBTITLE_DELAY + 0.5,
+            duration: 0.7,
             ease: [0.22, 1, 0.36, 1],
           }}
         >
@@ -217,21 +193,15 @@ export default function Hero() {
             href="https://axs.pizza"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-liquid-glass"
+            className="btn-liquid-glass px-10 py-4 text-lg"
           >
             Launch App
           </a>
         </motion.div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 1 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 pointer-events-none"
-      >
-        <div className="w-[1px] h-16 bg-gradient-to-b from-white/0 via-white/40 to-white/0 animate-pulse" />
-      </motion.div>
+      {/* Soft fade into the next section */}
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-[#020201] pointer-events-none z-10" />
     </section>
   );
 }

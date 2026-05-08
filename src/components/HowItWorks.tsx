@@ -88,7 +88,7 @@ export default function HowItWorks() {
           >
             <div className="space-y-4">
               <span className="text-[#D97706] text-lg font-normal font-mono">
-                /{step.number}
+                {step.number}
               </span>
               <h3 className="text-5xl font-serif font-normal text-white">
                 {step.title}
